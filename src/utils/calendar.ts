@@ -3,6 +3,23 @@ import { isHoliday, getHolidayName, isSunday, isSaturday } from './holidays';
 
 export const DAYS_OF_WEEK = ['日', '月', '火', '水', '木', '金', '土'];
 
+// 日本のタイムゾーン（JST）で現在の日付を取得
+export function getJSTDate(): Date {
+  const now = new Date();
+  // 日本時間に変換（UTC+9）
+  const jstOffset = 9 * 60; // 9時間をミリ秒に変換
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const jst = new Date(utc + (jstOffset * 60000));
+  return jst;
+}
+
+// 日本のタイムゾーンで日付を作成
+export function createJSTDate(year: number, month: number, day: number): Date {
+  // 月は0ベースなので調整
+  const date = new Date(year, month, day);
+  return date;
+}
+
 export function formatDate(date: Date): string {
   // ローカルタイムゾーンを使用して日付をフォーマット（UTCの影響を避ける）
   const year = date.getFullYear();
@@ -19,7 +36,13 @@ export function getMonthName(date: Date): string {
   return date.toLocaleDateString('ja-JP', {
     year: 'numeric',
     month: 'long',
+    timeZone: 'Asia/Tokyo',
   });
+}
+
+// 日本時間での今日の日付を取得
+export function getTodayJST(): Date {
+  return getJSTDate();
 }
 
 export function getCalendarDates(
@@ -35,7 +58,7 @@ export function getCalendarDates(
   const startDate = new Date(year, month, 1 - startDayOfWeek);
 
   const dates: CalendarDate[] = [];
-  const today = new Date();
+  const today = getTodayJST(); // 日本時間での今日を取得
 
   // 6週間分（42日）のカレンダーを生成
   for (let i = 0; i < 42; i++) {
