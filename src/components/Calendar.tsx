@@ -4,9 +4,11 @@ import type { Event } from '../types';
 import {
   formatDate,
   getMonthName,
+  getJapaneseMonthName,
   DAYS_OF_WEEK,
   getCalendarDates,
   getTodayJST,
+  canNavigateToPreviousMonth,
 } from '../utils/calendar';
 import { isRedDate, isBlueDate, getHolidayName } from '../utils/holidays';
 import { EventModal } from './EventModal';
@@ -17,17 +19,22 @@ export function Calendar() {
   const [events, setEvents] = useLocalStorage<Event[]>('calendar-events', []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | undefined>();
+  const [isJapaneseEra, setIsJapaneseEra] = useState(false); // 西暦がデフォルト
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const calendarDates = getCalendarDates(year, month, events, selectedDate);
 
   const navigateMonth = (direction: 'prev' | 'next') => {
-    setCurrentDate(prev => {
-      const newDate = new Date(prev);
-      newDate.setMonth(prev.getMonth() + (direction === 'next' ? 1 : -1));
-      return newDate;
-    });
+    const newDate = new Date(currentDate);
+    newDate.setMonth(currentDate.getMonth() + (direction === 'next' ? 1 : -1));
+    
+    // 1900年以前への移動を制限
+    if (direction === 'prev' && !canNavigateToPreviousMonth(currentDate)) {
+      return; // 移動しない
+    }
+    
+    setCurrentDate(newDate);
   };
 
   const handleDateClick = (date: Date) => {
@@ -71,18 +78,62 @@ export function Calendar() {
     setCurrentDate(getTodayJST());
   };
 
+  const displayMonthName = isJapaneseEra 
+    ? getJapaneseMonthName(currentDate) 
+    : getMonthName(currentDate);
+
+  // 前の月への移動が可能かどうか
+  const canGoToPrev = canNavigateToPreviousMonth(currentDate);
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       {/* カレンダーヘッダー */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          {getMonthName(currentDate)}
-        </h1>
+        <div className="flex items-center space-x-4">
+          <h1 className="text-2xl font-bold text-gray-800">
+            {displayMonthName}
+          </h1>
+          
+          {/* 西暦・和暦切り替えトグルボタン */}
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button
+              type="button"
+              onClick={() => setIsJapaneseEra(false)}
+              className={`
+                px-3 py-1 text-sm font-medium rounded-md transition-colors
+                ${!isJapaneseEra 
+                  ? 'bg-white text-blue-600 shadow-sm' 
+                  : 'text-gray-600 hover:text-gray-800'}
+              `}
+            >
+              西暦
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsJapaneseEra(true)}
+              className={`
+                px-3 py-1 text-sm font-medium rounded-md transition-colors
+                ${isJapaneseEra 
+                  ? 'bg-white text-blue-600 shadow-sm' 
+                  : 'text-gray-600 hover:text-gray-800'}
+              `}
+            >
+              和暦
+            </button>
+          </div>
+        </div>
+        
         <div className="flex space-x-2">
           <button
             type="button"
             onClick={() => navigateMonth('prev')}
-            className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+            disabled={!canGoToPrev}
+            className={`
+              p-2 rounded-md transition-colors
+              ${canGoToPrev 
+                ? 'hover:bg-gray-100' 
+                : 'cursor-not-allowed opacity-40'}
+            `}
           >
             <svg
               className="w-5 h-5"
