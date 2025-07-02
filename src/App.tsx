@@ -14,6 +14,7 @@ function App() {
             Vite + React v19 + TypeScript v5.6 + Tailwind CSS v4
           </p>
           <button 
+            type="button"
             onClick={() => setCount((count) => count + 1)}
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
           >
