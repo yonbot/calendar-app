@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+build
+
+# Log files
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# IDE files
+.vscode
+.idea
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Package manager lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml 

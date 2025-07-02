@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -13,9 +13,9 @@ function App() {
           <p className="text-gray-600 mb-4">
             Vite + React v19 + TypeScript v5.6 + Tailwind CSS v4
           </p>
-          <button 
+          <button
             type="button"
-            onClick={() => setCount((count) => count + 1)}
+            onClick={() => setCount(count => count + 1)}
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
           >
             Count: {count}
@@ -26,7 +26,7 @@ function App() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
