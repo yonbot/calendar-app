@@ -80,15 +80,28 @@ export function EventModal({
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // 日付をYYYY年MM月DD日形式に変換（タイムゾーンの影響を避ける）
+  const formatDateToJapanese = (dateStr: string): string => {
+    if (!dateStr) return '';
+    // YYYY-MM-DD形式の文字列を直接分割してタイムゾーンの影響を避ける
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return `${year}年${month}月${day}日`;
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">
-            {event ? '予定を編集' : '予定を追加'}
-          </h2>
+          <div className="flex items-center space-x-3">
+            <h2 className="text-xl font-bold">
+              {event ? '予定を編集' : '予定を追加'}
+            </h2>
+            <span className="text-sm text-gray-600 font-medium">
+              {formatDateToJapanese(selectedDate)}
+            </span>
+          </div>
           <button
             type="button"
             onClick={onClose}

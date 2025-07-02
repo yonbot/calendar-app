@@ -19,9 +19,12 @@ const FIXED_HOLIDAYS: Record<string, string> = {
   '12-23': '天皇誕生日',
 };
 
-// 日付をYYYY-MM-DD形式にフォーマット
+// 日付をYYYY-MM-DD形式にフォーマット（ローカルタイムゾーン使用）
 function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 // 指定年の全祝日を取得
