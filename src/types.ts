@@ -14,4 +14,8 @@ export interface CalendarDate {
   isToday: boolean;
   isSelected: boolean;
   events: Event[];
+  isHoliday: boolean;
+  holidayName: string | null;
+  isSunday: boolean;
+  isSaturday: boolean;
 }

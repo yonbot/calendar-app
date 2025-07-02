@@ -1,4 +1,5 @@
 import type { CalendarDate, Event } from '../types';
+import { isHoliday, getHolidayName, isSunday, isSaturday } from './holidays';
 
 export const DAYS_OF_WEEK = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -24,34 +25,19 @@ export function getCalendarDates(
   selectedDate: Date | null
 ): CalendarDate[] {
   const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const startDate = new Date(firstDay);
-  const endDate = new Date(lastDay);
+  const startDayOfWeek = firstDay.getDay(); // 0 = 日曜日, 1 = 月曜日, ..., 6 = 土曜日
 
-  // 月の最初の日の曜日を取得
-  const startDayOfWeek = firstDay.getDay();
-  // 月の最後の日の曜日を取得
-  const endDayOfWeek = lastDay.getDay();
-
-  // 前月の日付を追加
-  for (let i = startDayOfWeek; i > 0; i--) {
-    const date = new Date(firstDay);
-    date.setDate(date.getDate() - i);
-    startDate.setTime(date.getTime());
-  }
-
-  // 次月の日付を追加
-  for (let i = 1; i < 7 - endDayOfWeek; i++) {
-    const date = new Date(lastDay);
-    date.setDate(date.getDate() + i);
-    endDate.setTime(date.getTime());
-  }
+  // カレンダーの開始日を計算（その月の1日から日曜日まで戻る）
+  const startDate = new Date(year, month, 1 - startDayOfWeek);
 
   const dates: CalendarDate[] = [];
-  const currentDate = new Date(startDate);
   const today = new Date();
 
-  while (currentDate <= endDate) {
+  // 6週間分（42日）のカレンダーを生成
+  for (let i = 0; i < 42; i++) {
+    const currentDate = new Date(startDate);
+    currentDate.setDate(startDate.getDate() + i);
+
     const dateStr = formatDate(currentDate);
     const dateEvents = events.filter(event => event.date === dateStr);
 
@@ -61,9 +47,11 @@ export function getCalendarDates(
       isToday: isSameDay(currentDate, today),
       isSelected: selectedDate ? isSameDay(currentDate, selectedDate) : false,
       events: dateEvents,
+      isHoliday: isHoliday(currentDate),
+      holidayName: getHolidayName(currentDate),
+      isSunday: isSunday(currentDate),
+      isSaturday: isSaturday(currentDate),
     });
-
-    currentDate.setDate(currentDate.getDate() + 1);
   }
 
   return dates;
