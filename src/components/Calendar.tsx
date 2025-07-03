@@ -240,7 +240,7 @@ export function Calendar() {
             <div
               key={dateStr}
               className={`
-                min-h-[100px] p-2 border-b border-r border-gray-200 cursor-pointer
+                min-h-[120px] p-2 border-b border-r border-gray-200 cursor-pointer
                 hover:bg-blue-50 transition-colors
                 ${!isCurrentMonth ? 'bg-gray-50 text-gray-400' : ''}
                 ${isToday ? 'bg-blue-100' : ''}
@@ -270,16 +270,25 @@ export function Calendar() {
 
               {/* 予定の表示 */}
               <div className="space-y-1">
-                {dateEvents.slice(0, 3).map(event => (
-                  <div
-                    key={event.id}
-                    onClick={e => handleEventClick(event, e)}
-                    className="px-2 py-1 bg-blue-500 text-white text-xs rounded truncate hover:bg-blue-600 transition-colors"
-                    title={`${event.title} ${event.startTime ? `(${event.startTime}${event.endTime ? `-${event.endTime}` : ''})` : ''}`}
-                  >
-                    {event.title}
-                  </div>
-                ))}
+                {dateEvents
+                  .sort((a, b) => {
+                    // 開始時刻でソート（時刻未指定は最後に）
+                    if (!a.startTime && !b.startTime) return 0;
+                    if (!a.startTime) return 1;
+                    if (!b.startTime) return -1;
+                    return a.startTime.localeCompare(b.startTime);
+                  })
+                  .slice(0, 3)
+                  .map(event => (
+                    <div
+                      key={event.id}
+                      onClick={e => handleEventClick(event, e)}
+                      className="px-2 py-1 bg-blue-500 text-white text-xs rounded truncate hover:bg-blue-600 transition-colors"
+                      title={`${event.startTime ? `${event.startTime}${event.endTime ? `-${event.endTime}` : ''} ` : ''}${event.title}`}
+                    >
+                      {event.startTime ? `${event.startTime} ` : ''}{event.title}
+                    </div>
+                  ))}
                 {dateEvents.length > 3 && (
                   <div className="text-xs text-gray-500 px-2">
                     +{dateEvents.length - 3} more
@@ -294,7 +303,7 @@ export function Calendar() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-7xl mx-auto p-4">
       {/* カレンダーヘッダー */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
