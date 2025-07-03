@@ -350,14 +350,14 @@ export function Calendar() {
               onClick={() => navigateMonth('prev')}
               disabled={!canGoToPrev}
               className={`
-                p-2 rounded-md transition-colors
+                px-3 py-2 rounded-md border transition-colors flex items-center justify-center
                 ${canGoToPrev 
-                  ? 'hover:bg-gray-100' 
-                  : 'cursor-not-allowed opacity-40'}
+                  ? 'border-gray-300 bg-white hover:bg-gray-50 text-gray-700' 
+                  : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'}
               `}
             >
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -373,17 +373,17 @@ export function Calendar() {
             <button
               type="button"
               onClick={handleTodayClick}
-              className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+              className="px-3 py-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 transition-colors text-sm font-medium"
             >
               今日
             </button>
             <button
               type="button"
               onClick={() => navigateMonth('next')}
-              className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+              className="px-3 py-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 transition-colors flex items-center justify-center"
             >
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
