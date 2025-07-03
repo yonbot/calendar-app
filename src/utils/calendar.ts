@@ -38,8 +38,11 @@ const ERAS: Era[] = [
   },
 ];
 
-// 最小年（1900年）の定数
-const MIN_YEAR = 1900;
+// 最小年を動的に計算（システム日付の年から100年前）
+function getMinYear(): number {
+  const currentYear = new Date().getFullYear();
+  return currentYear - 100;
+}
 
 // 日本のタイムゾーン（JST）で現在の日付を取得
 export function getJSTDate(): Date {
@@ -83,7 +86,7 @@ export function getMonthName(date: Date): string {
 export function getJapaneseMonthName(date: Date): string {
   const japaneseDate = convertToJapaneseEra(date);
   if (!japaneseDate) {
-    // 1900年以前の場合は西暦を表示
+    // 最小年以前の場合は西暦を表示
     return getMonthName(date);
   }
   
@@ -94,9 +97,10 @@ export function getJapaneseMonthName(date: Date): string {
 // 西暦を和暦に変換
 export function convertToJapaneseEra(date: Date): { eraName: string; year: number } | null {
   const year = date.getFullYear();
+  const minYear = getMinYear();
   
-  // 1900年以前は対応しない
-  if (year < MIN_YEAR) {
+  // 最小年以前は対応しない
+  if (year < minYear) {
     return null;
   }
   
@@ -124,16 +128,21 @@ export function convertToJapaneseEra(date: Date): { eraName: string; year: numbe
   return null;
 }
 
-// 年が最小年（1900年）以上かどうかをチェック
+// 年が最小年以上かどうかをチェック
 export function isValidYear(year: number): boolean {
-  return year >= MIN_YEAR;
+  return year >= getMinYear();
 }
 
 // 前の月に移動可能かどうかをチェック
 export function canNavigateToPreviousMonth(currentDate: Date): boolean {
   const prevMonth = new Date(currentDate);
   prevMonth.setMonth(currentDate.getMonth() - 1);
-  return isValidYear(prevMonth.getFullYear());
+  
+  // 最小年の1月1日以前には移動できない
+  const minYear = getMinYear();
+  const minDate = new Date(minYear, 0, 1); // 1月1日
+  
+  return prevMonth >= minDate;
 }
 
 // 日本時間での今日の日付を取得
