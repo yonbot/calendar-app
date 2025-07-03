@@ -9,7 +9,6 @@ import {
   getCalendarDates,
   getTodayJST,
   canNavigateToPreviousMonth,
-  isValidYear,
 } from '../utils/calendar';
 import { isRedDate, isBlueDate, getHolidayName } from '../utils/holidays';
 import { EventModal } from './EventModal';
@@ -32,12 +31,12 @@ export function Calendar() {
   const navigateMonth = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate);
     newDate.setMonth(currentDate.getMonth() + (direction === 'next' ? 1 : -1));
-    
+
     // 1900年以前への移動を制限
     if (direction === 'prev' && !canNavigateToPreviousMonth(currentDate)) {
       return; // 移動しない
     }
-    
+
     setCurrentDate(newDate);
   };
 
@@ -105,8 +104,8 @@ export function Calendar() {
     setViewMode('month');
   };
 
-  const displayMonthName = isJapaneseEra 
-    ? getJapaneseMonthName(currentDate) 
+  const displayMonthName = isJapaneseEra
+    ? getJapaneseMonthName(currentDate)
     : getMonthName(currentDate);
 
   // 前の月への移動が可能かどうか
@@ -126,8 +125,18 @@ export function Calendar() {
   // 月選択ビュー
   const renderMonthView = () => {
     const months = [
-      '1月', '2月', '3月', '4月', '5月', '6月',
-      '7月', '8月', '9月', '10月', '11月', '12月'
+      '1月',
+      '2月',
+      '3月',
+      '4月',
+      '5月',
+      '6月',
+      '7月',
+      '8月',
+      '9月',
+      '10月',
+      '11月',
+      '12月',
     ];
 
     return (
@@ -140,22 +149,34 @@ export function Calendar() {
             className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg text-xl font-bold hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
           >
             <span>{year}年</span>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
         </div>
         <div className="grid grid-cols-3 gap-4">
           {months.map((monthName, index) => (
             <button
-              key={index}
+              key={monthName}
               type="button"
               onClick={() => handleMonthSelect(index)}
               className={`
                 p-4 text-center rounded-lg border-2 transition-colors
-                ${month === index 
-                  ? 'border-blue-500 bg-blue-50 text-blue-600' 
-                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}
+                ${
+                  month === index
+                    ? 'border-blue-500 bg-blue-50 text-blue-600'
+                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                }
               `}
             >
               {monthName}
@@ -190,9 +211,11 @@ export function Calendar() {
               onClick={() => handleYearSelect(yearOption)}
               className={`
                 p-3 text-center rounded-lg border-2 transition-colors
-                ${year === yearOption 
-                  ? 'border-blue-500 bg-blue-50 text-blue-600' 
-                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}
+                ${
+                  year === yearOption
+                    ? 'border-blue-500 bg-blue-50 text-blue-600'
+                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                }
               `}
             >
               {yearOption}年
@@ -213,8 +236,13 @@ export function Calendar() {
             key={day}
             className={`
               p-3 text-center text-sm font-medium bg-gray-50
-              ${index === 0 ? 'text-red-600' : 
-                index === 6 ? 'text-blue-600' : 'text-gray-500'}
+              ${
+                index === 0
+                  ? 'text-red-600'
+                  : index === 6
+                    ? 'text-blue-600'
+                    : 'text-gray-500'
+              }
             `}
           >
             {day}
@@ -253,9 +281,15 @@ export function Calendar() {
                     className={`
                       text-sm font-medium
                       ${isToday ? 'text-blue-600' : ''}
-                      ${!isCurrentMonth ? 'text-gray-400' : 
-                        isRed && isCurrentMonth ? 'text-red-600' : 
-                        isBlue && isCurrentMonth ? 'text-blue-600' : 'text-gray-900'}
+                      ${
+                        !isCurrentMonth
+                          ? 'text-gray-400'
+                          : isRed && isCurrentMonth
+                            ? 'text-red-600'
+                            : isBlue && isCurrentMonth
+                              ? 'text-blue-600'
+                              : 'text-gray-900'
+                      }
                     `}
                   >
                     {date.getDate()}
@@ -286,7 +320,8 @@ export function Calendar() {
                       className="px-2 py-1 bg-blue-500 text-white text-xs rounded truncate hover:bg-blue-600 transition-colors"
                       title={`${event.startTime ? `${event.startTime}${event.endTime ? `-${event.endTime}` : ''} ` : ''}${event.title}`}
                     >
-                      {event.startTime ? `${event.startTime} ` : ''}{event.title}
+                      {event.startTime ? `${event.startTime} ` : ''}
+                      {event.title}
                     </div>
                   ))}
                 {dateEvents.length > 3 && (
@@ -315,12 +350,22 @@ export function Calendar() {
           >
             <span>{displayMonthName}</span>
             {viewMode === 'calendar' && (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             )}
           </button>
-          
+
           {/* 西暦・和暦切り替えトグルボタン */}
           {viewMode === 'calendar' && (
             <div className="flex bg-gray-100 rounded-lg p-1">
@@ -329,9 +374,11 @@ export function Calendar() {
                 onClick={() => setIsJapaneseEra(false)}
                 className={`
                   px-3 py-1 text-sm font-medium rounded-md transition-colors
-                  ${!isJapaneseEra 
-                    ? 'bg-white text-blue-600 shadow-sm' 
-                    : 'text-gray-600 hover:text-gray-800'}
+                  ${
+                    !isJapaneseEra
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800'
+                  }
                 `}
               >
                 西暦
@@ -341,9 +388,11 @@ export function Calendar() {
                 onClick={() => setIsJapaneseEra(true)}
                 className={`
                   px-3 py-1 text-sm font-medium rounded-md transition-colors
-                  ${isJapaneseEra 
-                    ? 'bg-white text-blue-600 shadow-sm' 
-                    : 'text-gray-600 hover:text-gray-800'}
+                  ${
+                    isJapaneseEra
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-800'
+                  }
                 `}
               >
                 和暦
@@ -351,7 +400,7 @@ export function Calendar() {
             </div>
           )}
         </div>
-        
+
         {viewMode === 'calendar' && (
           <div className="flex space-x-2">
             <button
@@ -360,9 +409,11 @@ export function Calendar() {
               disabled={!canGoToPrev}
               className={`
                 px-3 py-2 rounded-md border transition-colors flex items-center justify-center
-                ${canGoToPrev 
-                  ? 'border-gray-300 bg-white hover:bg-gray-50 text-gray-700' 
-                  : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'}
+                ${
+                  canGoToPrev
+                    ? 'border-gray-300 bg-white hover:bg-gray-50 text-gray-700'
+                    : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
+                }
               `}
             >
               <svg

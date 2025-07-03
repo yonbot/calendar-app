@@ -93,10 +93,7 @@ export function EventModal({
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* 背景オーバーレイ */}
-      <div 
-        className="absolute inset-0 bg-black/20"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/20" onClick={onClose} />
       {/* モーダルコンテンツ */}
       <div className="relative bg-white rounded-lg p-6 w-full max-w-md mx-4 shadow-xl">
         <div className="flex justify-between items-center mb-4">

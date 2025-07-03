@@ -31,14 +31,14 @@ function formatDate(date: Date): string {
 function getNthMonday(year: number, month: number, n: number): Date {
   const firstDay = new Date(year, month, 1);
   const firstMonday = new Date(firstDay);
-  
+
   // 最初の月曜日を見つける
   const daysUntilMonday = (8 - firstDay.getDay()) % 7;
   firstMonday.setDate(1 + daysUntilMonday);
-  
+
   // n番目の月曜日
   firstMonday.setDate(firstMonday.getDate() + (n - 1) * 7);
-  
+
   return firstMonday;
 }
 
@@ -47,7 +47,9 @@ function getVernalEquinox(year: number): Date {
   // 2000年から2099年の簡易計算
   let day: number;
   if (year >= 2000 && year <= 2099) {
-    day = Math.floor(20.8431 + 0.242194 * (year - 1851) - Math.floor((year - 1851) / 4));
+    day = Math.floor(
+      20.8431 + 0.242194 * (year - 1851) - Math.floor((year - 1851) / 4)
+    );
   } else {
     // デフォルト値
     day = 20;
@@ -60,7 +62,9 @@ function getAutumnalEquinox(year: number): Date {
   // 2000年から2099年の簡易計算
   let day: number;
   if (year >= 2000 && year <= 2099) {
-    day = Math.floor(23.2488 + 0.242194 * (year - 1851) - Math.floor((year - 1851) / 4));
+    day = Math.floor(
+      23.2488 + 0.242194 * (year - 1851) - Math.floor((year - 1851) / 4)
+    );
   } else {
     // デフォルト値
     day = 23;
@@ -71,7 +75,7 @@ function getAutumnalEquinox(year: number): Date {
 // 振替休日を計算
 function getSubstituteHolidays(holidays: Holiday[]): Holiday[] {
   const substituteHolidays: Holiday[] = [];
-  
+
   holidays.forEach(holiday => {
     const date = new Date(holiday.date);
     // 日曜日の祝日は翌日が振替休日
@@ -84,7 +88,7 @@ function getSubstituteHolidays(holidays: Holiday[]): Holiday[] {
       });
     }
   });
-  
+
   return substituteHolidays;
 }
 

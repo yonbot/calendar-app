@@ -49,8 +49,8 @@ export function getJSTDate(): Date {
   const now = new Date();
   // 日本時間に変換（UTC+9）
   const jstOffset = 9 * 60; // 9時間をミリ秒に変換
-  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const jst = new Date(utc + (jstOffset * 60000));
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  const jst = new Date(utc + jstOffset * 60000);
   return jst;
 }
 
@@ -89,32 +89,36 @@ export function getJapaneseMonthName(date: Date): string {
     // 最小年以前の場合は西暦を表示
     return getMonthName(date);
   }
-  
+
   const month = date.getMonth() + 1;
   return `${japaneseDate.eraName}${japaneseDate.year}年${month}月`;
 }
 
 // 西暦を和暦に変換
-export function convertToJapaneseEra(date: Date): { eraName: string; year: number } | null {
+export function convertToJapaneseEra(
+  date: Date
+): { eraName: string; year: number } | null {
   const year = date.getFullYear();
   const minYear = getMinYear();
-  
+
   // 最小年以前は対応しない
   if (year < minYear) {
     return null;
   }
-  
+
   // 該当する元号を検索
   for (const era of ERAS) {
     const startYear = era.startDate.getFullYear();
-    const endYear = era.endDate ? era.endDate.getFullYear() : new Date().getFullYear() + 100; // 現在の元号の場合
-    
+    const endYear = era.endDate
+      ? era.endDate.getFullYear()
+      : new Date().getFullYear() + 100; // 現在の元号の場合
+
     if (year >= startYear && year <= endYear) {
       // より詳細な日付チェック
       const targetDate = new Date(year, date.getMonth(), date.getDate());
       const isAfterStart = targetDate >= era.startDate;
       const isBeforeEnd = era.endDate ? targetDate <= era.endDate : true;
-      
+
       if (isAfterStart && isBeforeEnd) {
         const eraYear = year - era.startDate.getFullYear() + 1;
         return {
@@ -124,7 +128,7 @@ export function convertToJapaneseEra(date: Date): { eraName: string; year: numbe
       }
     }
   }
-  
+
   return null;
 }
 
@@ -137,11 +141,11 @@ export function isValidYear(year: number): boolean {
 export function canNavigateToPreviousMonth(currentDate: Date): boolean {
   const prevMonth = new Date(currentDate);
   prevMonth.setMonth(currentDate.getMonth() - 1);
-  
+
   // 最小年の1月1日以前には移動できない
   const minYear = getMinYear();
   const minDate = new Date(minYear, 0, 1); // 1月1日
-  
+
   return prevMonth >= minDate;
 }
 
